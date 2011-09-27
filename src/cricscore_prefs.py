@@ -1,0 +1,112 @@
+
+# - coding: utf-8 -
+
+# Copyright (C) 2009 Sachin Patil <sachin6870 at gmail.com>
+
+# This file is part of CricScore applet
+
+# CricScore applet is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+
+# CricScore applet is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with Cric Score applet.  If not, see <http://www.gnu.org/licenses/>.
+
+import gtk
+import urllib2
+import xml.etree.ElementTree as etree
+import threading
+import io
+from gettext import gettext as _
+
+class LeftLabel(gtk.Label):
+    def __init__(self, string):
+        gtk.Label.__init__(self, string)
+        self.set_alignment(0.0, 0.5)
+        
+class CricScorePrefs(gtk.Dialog):
+    MAIN_URL = "http://synd.cricbuzz.com/ashwl/scores-multi.xml"
+    matches = {}
+    def __init__(self, scoreapplet):
+        self.scoreapplet = scoreapplet;
+        try:
+          req = urllib2.urlopen(self.MAIN_URL)
+        except urllib2.URLError: return
+        feed = req.read()
+        tree = etree.parse(io.StringIO(feed))
+        root = tree.getroot()
+        matchesEle = root.findall('match')
+        for matchEle in matchesEle:
+           self.matches[matchEle.find('team1').text + " VS " + matchEle.find('team2').text] = matchEle.find('scores-url').text
+        gtk.Dialog.__init__(self, title=_("CricScore Preferences"), buttons=(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE))
+        self.connect('response', self.response_cb)
+        combobox = gtk.combo_box_new_text()
+        combobox.append_text('Select a match:')
+        for key in  self.matches.iterkeys():
+          combobox.append_text(key)
+        combobox.connect('changed', self._matchChange)
+        combobox.set_active(0)
+        self.set_border_width(5)
+        self.set_resizable(False)
+        self.set_has_separator(False)
+        self.vbox.set_spacing(2)
+        matchBox = gtk.HBox()
+        matchBox.set_spacing(12)
+        matchBox.pack_start(LeftLabel(_("Select Match:")), expand=False)
+        matchBox.pack_end(combobox)
+        button = gtk.CheckButton("Show score Updates")
+        button.set_active(self.scoreapplet.getShowScoreUpdate())
+        button.unset_flags(gtk.CAN_FOCUS)
+        button.connect("clicked", self.on_clicked)
+        entry = gtk.Entry()
+        entry.set_width_chars(6)
+        entry.set_max_length(6)
+        entry.set_text(str(self.scoreapplet.getNotificationTimeOut()))
+        entry.connect("changed", self.setTimeOut, entry)
+        matchBoxTimeOut = gtk.HBox()
+        matchBoxTimeOut.set_spacing(12)
+        matchBoxTimeOut.pack_start(LeftLabel(_("Time out for Notifications:")), expand=False)
+        matchBoxTimeOut.pack_end(entry)
+        vbox = gtk.VBox()
+        vbox.pack_start(matchBox)
+        vbox.pack_start(gtk.HSeparator())
+        vbox.pack_start(button)
+        vbox.pack_start(matchBoxTimeOut)
+        vbox.set_spacing(6)
+        vbox.set_border_width(5)
+        self.vbox.pack_start(vbox)
+        vbox.show_all()
+        
+    def _matchChange (self, combobox):
+        model = combobox.get_model()
+        index = combobox.get_active()
+        print self.matches[model[index][0]]
+        if index:
+            self.scoreapplet.matchSelectionChanged(self.matches[model[index][0]])
+        return
+    
+    def on_clicked(self, widget):
+        if widget.get_active():
+            self.scoreapplet.setShowScoreUpdate(True)
+        else:
+            self.scoreapplet.setShowScoreUpdate(False)
+
+    def setTimeOut(self, widget, entry):
+       try:
+           timeout = int(entry.get_text())
+       except ValueError:
+           print ValueError
+           timeout = 3         
+       self.scoreapplet.setNotificationTimeOut(timeout)
+       
+    def response_cb(self, dialog, response):
+       if response == gtk.RESPONSE_CLOSE:
+          dialog.destroy()
+          self.scoreapplet.label.set_text('Cric Score loading')
+          self.scoreapplet.update()

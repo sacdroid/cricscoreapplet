@@ -1,0 +1,45 @@
+
+
+Jan 29, 2011 : 
+             * cricketscore.py :
+                 Fixed Cricket score applet stopped working - ID: 3160959
+ 
+
+Mar 07, 2010 : 
+             * cricketscore.py :
+                 Corrected formatting between methods
+                 Changed timeout preference unit to seconds from miliseconds
+ 
+             * cricscore_prefs.py  
+                                 Update main score feed url
+             
+Dec 08, 2009 : 
+             * cricketscore.py :
+                 included logging support
+                 Added methods to set/get timeout and showScoreUpdate flag
+                 Considered timeout and showScoreUpdate preference
+                 Added one more state "Complete" State to State class and checked for it to avoid unneeded score update.
+             * cricscore_prefs.py  
+                                 Added Checkbox showScoreUpdate flag and text box for timeout in Preference UI.
+                                 Added corresponding event listners.
+             * INSTALL:  Added install instructions.
+
+
+Dec 04, 2009 : 
+             * Standardized directory stucure to gnome applet docs.
+             * cricketscore.py : Refactored to consier various states in match(Stump, Tea,Lunch,Preview etc)
+                                 added support for libnotiy notifications for score changes.
+                                 added preference and about dialog.
+             * cricscore_prefs.py  
+                                 Preference UI
+                                 
+             * gnome_cricscore_globals.py 
+                                 Constants for applet
+
+Nov 29, 2009 :
+
+             * cricketscore.py : Fixed loading issue for slower internet connection 
+
+Nov 27, 2009 :  
+
+             * Initial directory structure and source code

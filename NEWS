@@ -1,0 +1,36 @@
+
+
+Jan 29, 2010 :
+===============
+Version Released 1.1.0.5
+===============
+  Applet
+        Fixed Cricket score applet stopped working - ID: 3160959
+
+
+
+Dec 04, 2009 :
+===============
+Version Released 1.0 alpha
+===============
+  Applet
+	* Match selection preference if there are multiple matches in progress.
+        * Wicket, four, sixes update through libnotify module.
+
+Nov 29, 2009 :
+===============
+Version 0.1
+===============
+  Applet
+	* Fixed loading issue for slower internet connection 
+        * Added Icon
+
+Nov 27, 2009 :
+=============
+Version 0.1 alpha
+=============
+  Applet
+	* Initial release
+        * This release has very basic features.
+
+

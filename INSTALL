@@ -1,0 +1,8 @@
+
+Download cricscore{version}.tar.gz and navigate to that folder and run following commands,
+   1.  Unpack the source
+   2. Open up a terminal
+   3. cd /path/to/cricscore/
+   4. As root: make install
+   5. Log out and then log in again to make Cric Score Applet show up in the list of available panel applets
+

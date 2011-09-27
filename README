@@ -1,0 +1,3 @@
+CricScore GNOME applet
+
+A gnome-applet which will display live cricket score at gnome-panel. It will also score updates through libnotify module. You can select matches from matches in progress.
